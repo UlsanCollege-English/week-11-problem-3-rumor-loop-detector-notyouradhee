@@ -1,7 +1,7 @@
 name: Autograding Tests
-'on':
-- push
-- repository_dispatch
+on:
+  - push
+  - repository_dispatch
 permissions:
   checks: write
   actions: read
@@ -13,26 +13,16 @@ jobs:
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
-    - name: Set up Python
-      uses: actions/setup-python@v5
-      with:
-        python-version: '3.11'
-    - name: Install pytest
-      run: pip install pytest
-    - name: Run tests
+    - name: tests
       id: tests
-      run: |
-        pytest -v > test_output.txt 2>&1
-        TEST_EXIT_CODE=$?
-        cat test_output.txt
-        if [ $TEST_EXIT_CODE -eq 0 ]; then
-          echo "result={\"version\":3,\"status\":\"pass\",\"tests\":[{\"name\":\"tests\",\"status\":\"pass\",\"message\":\"All tests passed\"}],\"max_score\":100}" >> $GITHUB_OUTPUT
-        else
-          echo "result={\"version\":3,\"status\":\"fail\",\"tests\":[{\"name\":\"tests\",\"status\":\"fail\",\"message\":\"Some tests failed\"}],\"max_score\":100}" >> $GITHUB_OUTPUT
-        fi
-        exit $TEST_EXIT_CODE
+      uses: classroom-resources/autograding-command-grader@v1
+      with:
+        test-name: tests
+        setup-command: pip install pytest
+        command: pytest -v
+        timeout: 10
+        max-score: 100
     - name: Autograding Reporter
-      if: always()
       uses: classroom-resources/autograding-grading-reporter@v1
       env:
         TESTS_RESULTS: "${{steps.tests.outputs.result}}"
