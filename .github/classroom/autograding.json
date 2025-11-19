@@ -3,7 +3,7 @@
     {
       "name": "tests",
       "setup": "pip install pytest",
-      "run": "python -m pytest -q",
+      "run": "pytest -v",
       "input": "",
       "output": "",
       "comparison": "included",
