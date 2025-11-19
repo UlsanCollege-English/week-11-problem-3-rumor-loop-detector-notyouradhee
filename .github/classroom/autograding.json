@@ -2,7 +2,7 @@
   "tests": [
     {
       "name": "tests",
-      "setup": "",
+      "setup": "pip install pytest",
       "run": "python -m pytest -q",
       "input": "",
       "output": "",
